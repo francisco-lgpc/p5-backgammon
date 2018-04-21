@@ -7,9 +7,9 @@ class Checker {
 		stroke(150);
 		strokeWeight(3);
 		fill(this.color * 255);
-		let x = (this.point + 0.5) * unitW;
+		let x = (this.point.index + 0.5) * unitW;
 		let y = (heightIdx + 0.5) * unitW;
-		if (this.point >= 10) {
+		if (this.point.index >= 10) {
 			x = width  - (x % width)
 			y = height - y
 		}

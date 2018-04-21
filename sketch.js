@@ -4,35 +4,49 @@ const BLACK = 0;
 let unitW;
 let unitH;
 
-const grid = Array(20).fill().map(() => [])
+let position;
+
 const dice = Array(2).fill();
 
-let diceImages;
+const checkers = []
 
+let diceImages;
 function preload () {
 	diceImages = Array(6).fill().map((_, i) => loadImage(`assets/images/dice/${i + 1}.png`))	
 }
 
-function pushToPoint(i, n) {
+function createCheckers(i, n) {
 	for (let _n = 0; _n < n; _n++) {
-		grid[i].push(new Checker(BLACK, i))
-		grid[19 - i].push(new Checker(WHITE, 19 - i))
+		let point = position.grid.find(point => point.index === i)
+		let checker = new Checker(BLACK, point)
+		checkers.push(checker)
+		position.grid[i].checkers.push(checker)
+
+		point = position.grid.find(point => point.index === 19 - i)
+		checker = new Checker(WHITE, point)
+		checkers.push(checker)
+		position.grid[19 - i].checkers.push(checker)
 	}
 }
 
-function createCheckers() {
-	pushToPoint(0, 2);
-	pushToPoint(9, 5);
-	pushToPoint(13, 3);
-	pushToPoint(15, 5);
+function createStartingPosition() {
+	createCheckers(0, 2);
+	createCheckers(9, 5);
+	createCheckers(13, 3);
+	createCheckers(15, 5);
+	position.update();
 }
 
 function setup() {
+	const grid = Array(20).fill().map((_, i) => new Point(i, []))
+	position = new Position(grid);
+
+
 	createCanvas(750, 950);
 	background(0);
 	unitW = width / 10;
 	unitH = (height / 2) - (height / 15);
-	createCheckers();
+	createStartingPosition();
 	showPosition();
 }
 
@@ -64,8 +78,8 @@ function drawBoard() {
 }
 
 function showCheckers() {
-	grid.forEach((point) => {
-		point.forEach((checker, i) => {
+	position.grid.forEach((point) => {
+		point.checkers.forEach((checker, i) => {
 			checker.show(i);
 		})
 	})
@@ -89,5 +103,8 @@ function keyPressed() {
   if (keyCode === 32) {
     rollDice();
     showDice();
+  } else if (keyCode === 65) {
+  	ai = new AI(BLACK);
+  	ai.play();
   }
 }
