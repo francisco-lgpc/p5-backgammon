@@ -5,7 +5,7 @@ let unitW;
 let unitH;
 
 const grid = Array(20).fill().map(() => [])
-
+const dice = Array(2).fill();
 
 function pushToPoint(i, n) {
 	for (let _n = 0; _n < n; _n++) {
@@ -64,3 +64,10 @@ function showCheckers() {
 		})
 	})
 }
+
+function rollDice() {
+	dice[0] = int(random(1, 7));
+	dice[1] = int(random(1, 7));
+	return dice;
+}
+
