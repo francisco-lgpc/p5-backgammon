@@ -1,17 +1,28 @@
+const WHITE = 1;
+const BLACK = 0;
+
+let unitW;
+let unitH;
+
 function setup() {
-	createCanvas(1000, 700);
+	createCanvas(900, 900);
 	background(0);
+	unitW = width / 10;
+	unitH = (height / 2) - (height / 20);
 }
 
 function draw() {
-	drawBoard();	
+	drawBoard();
+
+	checker = new Checker
+	checker.show()
 }
 
 
 function drawBoard() {
 	background(0);
-	const unitW = width / 10;
-	const unitH = (height / 2) - (height / 20);
+	noStroke(255)
+
 	for (let i = 0; i < 10; i++) {
 		fill(i % 2 === 0 ? 200 : 100);
 		const x1 = unitW * i;
