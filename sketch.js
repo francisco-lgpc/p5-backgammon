@@ -7,29 +7,18 @@ let unitH;
 const grid = Array(20).fill().map(() => [])
 
 
+function pushToPoint(i, n) {
+	for (let _n = 0; _n < n; _n++) {
+		grid[i].push(new Checker(BLACK, i))
+		grid[19 - i].push(new Checker(WHITE, 19 - i))
+	}
+}
+
 function createCheckers() {
-	let i = 0;
-	for (let n = 0; n < 2; n++) {
-		grid[i].push(new Checker(BLACK, i))
-		grid[19 - i].push(new Checker(WHITE, 19 - i))
-	}
-	i = 4
-	for (let n = 0; n < 5; n++) {
-		grid[i].push(new Checker(WHITE, i))
-		grid[19 - i].push(new Checker(BLACK, 19 - i))
-	}
-
-	i = 6;
-	for (let n = 0; n < 3; n++) {
-		grid[i].push(new Checker(WHITE, i))
-		grid[19 - i].push(new Checker(BLACK, 19 - i))
-	}
-
-	i = 9;
-	for (let n = 0; n < 5; n++) {
-		grid[i].push(new Checker(BLACK, i))
-		grid[19 - i].push(new Checker(WHITE, 19 - i))
-	}
+	pushToPoint(0, 2);
+	pushToPoint(9, 5);
+	pushToPoint(13, 3);
+	pushToPoint(15, 5);
 }
 
 function setup() {
@@ -38,8 +27,7 @@ function setup() {
 	unitW = width / 10;
 	unitH = (height / 2) - (height / 20);
 	createCheckers();
-	drawBoard();
-	showCheckers();
+	showPosition();
 }
 
 function showPosition() {
