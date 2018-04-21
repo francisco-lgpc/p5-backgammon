@@ -7,6 +7,12 @@ let unitH;
 const grid = Array(20).fill().map(() => [])
 const dice = Array(2).fill();
 
+let diceImages;
+
+function preload () {
+	diceImages = Array(6).fill().map((_, i) => loadImage(`assets/images/dice/${i + 1}.png`))	
+}
+
 function pushToPoint(i, n) {
 	for (let _n = 0; _n < n; _n++) {
 		grid[i].push(new Checker(BLACK, i))
@@ -22,10 +28,10 @@ function createCheckers() {
 }
 
 function setup() {
-	createCanvas(800, 950);
+	createCanvas(750, 950);
 	background(0);
 	unitW = width / 10;
-	unitH = (height / 2) - (height / 20);
+	unitH = (height / 2) - (height / 15);
 	createCheckers();
 	showPosition();
 }
@@ -71,3 +77,17 @@ function rollDice() {
 	return dice;
 }
 
+
+function showDice() {
+	const diceSize = 75;
+	imageMode(CENTER);
+	image(diceImages[dice[0] - 1], width / 2 - diceSize, height / 2, diceSize, diceSize)
+	image(diceImages[dice[1] - 1], width / 2 + diceSize, height / 2, diceSize, diceSize)	
+}
+
+function keyPressed() {
+  if (keyCode === 32) {
+    rollDice();
+    showDice();
+  }
+}
