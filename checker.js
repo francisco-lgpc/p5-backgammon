@@ -1,12 +1,18 @@
 class Checker {
-	constructor() {
-		this.point = 0;
-		this.color = BLACK;
+	constructor(color, point) {
+		this.color = color;
+		this.point = point;
 	}
-	show() {
+	show(heightIdx) {
 		stroke(150);
 		strokeWeight(3);
 		fill(this.color * 255);
-		ellipse((this.point + 0.5) * unitW, unitW / 2, unitW)
+		let x = (this.point + 0.5) * unitW;
+		let y = (heightIdx + 0.5) * unitW;
+		if (this.point >= 10) {
+			x = width  - (x % width)
+			y = height - y
+		}
+		ellipse(x, y, unitW)
 	}
 }
