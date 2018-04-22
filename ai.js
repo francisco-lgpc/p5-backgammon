@@ -8,7 +8,8 @@ class AI {
 
 	play() {
 		dice.forEach(die => {
-			const myPlayableCheckers = this.myCheckers.slice()
+			const myPlayableCheckers = this.determineMyPlayableCheckers();
+
 			while(true) {
 				const checker = myPlayableCheckers.splice(int(random(myPlayableCheckers.length)), 1)[0];
 				let newPoint;
@@ -19,8 +20,8 @@ class AI {
 					newPoint = position.findPoint(checker.point.index - die)
 				}
 
-				if (newPoint && newPoint.closed !== this.oppColor ) {
-					checker.point = newPoint
+				if (newPoint && newPoint.index !== 25 && newPoint.index !== 0 && newPoint.closed !== this.oppColor ) {
+					position.play(checker, newPoint);
 					break;
 				}
 
@@ -32,5 +33,17 @@ class AI {
 		})
 		position.update();
 		showPosition();
+	}
+
+	determineMyPlayableCheckers() {
+		const myCheckers = this.myCheckers.slice()
+		const hitCheckers = myCheckers.filter(checker => checker.point === checker.startPoint())
+
+		if (hitCheckers.length > 0) {
+			return hitCheckers;
+		}
+
+
+		return myCheckers;
 	}
 }

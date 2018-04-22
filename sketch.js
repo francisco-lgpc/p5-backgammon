@@ -7,7 +7,6 @@ let unitH;
 let position;
 
 const dice = Array(2).fill();
-
 const checkers = []
 
 let diceImages;
@@ -22,32 +21,33 @@ function createCheckers(i, n) {
 		checkers.push(checker)
 		position.grid[i].checkers.push(checker)
 
-		point = position.grid.find(point => point.index === 19 - i)
+		point = position.grid.find(point => point.index === 25 - i)
 		checker = new Checker(WHITE, point)
 		checkers.push(checker)
-		position.grid[19 - i].checkers.push(checker)
+		position.grid[25 - i].checkers.push(checker)
 	}
 }
 
 function createStartingPosition() {
-	createCheckers(0, 2);
-	createCheckers(9, 5);
-	createCheckers(13, 3);
-	createCheckers(15, 5);
+	createCheckers(1, 2);
+	createCheckers(12, 5);
+	createCheckers(17, 3);
+	createCheckers(19, 5);
 	position.update();
 }
 
 function setup() {
-	const grid = Array(20).fill().map((_, i) => new Point(i, []))
+	const grid = Array(26).fill().map((_, i) => new Point(i, []))
 	position = new Position(grid);
 
 
 	createCanvas(750, 950);
 	background(0);
-	unitW = width / 10;
+	unitW = width / 12;
 	unitH = (height / 2) - (height / 15);
 	createStartingPosition();
 	showPosition();
+	position.update();
 }
 
 function showPosition() {
@@ -59,7 +59,7 @@ function drawBoard() {
 	background(0);
 	noStroke(255)
 
-	for (let i = 0; i < 10; i++) {
+	for (let i = 0; i < 12; i++) {
 		fill(i % 2 === 0 ? 200 : 100);
 		const x1 = unitW * i;
 		const x2 = unitW * (i + 0.5);
@@ -98,13 +98,14 @@ function showDice() {
 	image(diceImages[dice[0] - 1], width / 2 - diceSize, height / 2, diceSize, diceSize)
 	image(diceImages[dice[1] - 1], width / 2 + diceSize, height / 2, diceSize, diceSize)	
 }
-
+let counter = 0;
 function keyPressed() {
   if (keyCode === 32) {
     rollDice();
     showDice();
   } else if (keyCode === 65) {
-  	ai = new AI(BLACK);
+		counter++;
+  	let ai = new AI(counter % 2);
   	ai.play();
   }
 }
