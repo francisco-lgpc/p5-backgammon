@@ -34,16 +34,4 @@ class AI {
 		position.update();
 		showPosition();
 	}
-
-	determineMyPlayableCheckers() {
-		const myCheckers = this.myCheckers.slice()
-		const hitCheckers = myCheckers.filter(checker => checker.point === checker.startPoint())
-
-		if (hitCheckers.length > 0) {
-			return hitCheckers;
-		}
-
-
-		return myCheckers;
-	}
 }

@@ -34,5 +34,36 @@ class Position {
 	updateClosedPoints() {
 		this.grid.forEach(point => point.updateClosed());
 	}
+
+	getPlayableCheckers(color, roll) {
+		const myCheckers  = checkers.filter(checker => checker.color === color)
+		const hitCheckers = myCheckers.filter(checker => checker.point === checker.startPoint())
+
+		if (hitCheckers.length > 0) {
+			return hitCheckers;
+		}
+
+
+		myCheckers.filter(checker => {
+			let newPoint;
+
+			const increment = roll * (color === BLACK ? 1 : -1)
+			newPoint = position.findPoint(checker.point.index + increment)
+
+			return (
+				newPoint &&
+				(newPoint.closed === color || !newPoint.closed)
+				(isBearingOff(color) || (newPoint.index !== 25 && newPoint.index !== 0 &&))
+			)
+		});
+
+		return myCheckers;
+	}
+
+	isBearingOff(color) {
+		return !myCheckers.some(checker => (
+			color === BLACK ? checker.point.index < 19 : checker.point.index > 6
+		))
+	}
 }
 
