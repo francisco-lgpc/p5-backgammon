@@ -52,8 +52,8 @@ class Position {
 
 			return (
 				newPoint &&
-				(newPoint.closed === color || !newPoint.closed)
-				(isBearingOff(color) || (newPoint.index !== 25 && newPoint.index !== 0 &&))
+				(newPoint.closed === color || !newPoint.closed) &&
+				(this.isBearingOff(color) || (newPoint.index !== 25 && newPoint.index !== 0))
 			)
 		});
 
@@ -61,7 +61,7 @@ class Position {
 	}
 
 	isBearingOff(color) {
-		return !myCheckers.some(checker => (
+		return !checkers.filter(checker => checker.color === color).some(checker => (
 			color === BLACK ? checker.point.index < 19 : checker.point.index > 6
 		))
 	}

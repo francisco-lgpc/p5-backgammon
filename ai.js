@@ -8,7 +8,7 @@ class AI {
 
 	play() {
 		dice.forEach(die => {
-			const myPlayableCheckers = this.determineMyPlayableCheckers();
+			const myPlayableCheckers = position.getPlayableCheckers(this.myColor, die);
 
 			while(true) {
 				const checker = myPlayableCheckers.splice(int(random(myPlayableCheckers.length)), 1)[0];
