@@ -2,7 +2,8 @@ class Checker {
 	constructor(color, point) {
 		this.color = color;
 		this.point = point;
-	}
+  }
+
 	show(heightIdx) {
 		stroke(150);
 		strokeWeight(3);

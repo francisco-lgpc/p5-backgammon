@@ -11,7 +11,6 @@ class Position {
 			}
 		}
 
-
 		if (newPoint.checkers.length === 1) {
 			const otherChecker = newPoint.checkers[0]
 			if (otherChecker.color !== checker.color) {	
@@ -42,7 +41,6 @@ class Position {
 		if (hitCheckers.length > 0) {
 			return hitCheckers;
 		}
-
 
 		myCheckers.filter(checker => {
 			let newPoint;

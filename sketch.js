@@ -9,6 +9,10 @@ let position;
 const dice = Array(2).fill();
 const checkers = []
 
+let player1
+let player2
+let activePlayer
+
 let diceImages;
 function preload () {
 	diceImages = Array(6).fill().map((_, i) => loadImage(`assets/images/dice/${i + 1}.png`))	
@@ -16,12 +20,12 @@ function preload () {
 
 function createCheckers(i, n) {
 	for (let _n = 0; _n < n; _n++) {
-		let point = position.grid.find(point => point.index === i)
+		let point = getPoint(i)
 		let checker = new Checker(BLACK, point)
 		checkers.push(checker)
 		position.grid[i].checkers.push(checker)
 
-		point = position.grid.find(point => point.index === 25 - i)
+		point = getPoint(25 - i)
 		checker = new Checker(WHITE, point)
 		checkers.push(checker)
 		position.grid[25 - i].checkers.push(checker)
@@ -47,7 +51,16 @@ function setup() {
 	unitH = (height / 2) - (height / 15);
 	createStartingPosition();
 	showPosition();
-	position.update();
+  position.update();
+  
+  choosePlayers()
+}
+
+function choosePlayers() {
+  player1 = new Player(WHITE)
+  player2 = new Player(BLACK)
+  activePlayer = player1
+  activePlayer.newTurn()
 }
 
 function showPosition() {
@@ -91,7 +104,6 @@ function rollDice() {
 	return dice;
 }
 
-
 function showDice() {
 	const diceSize = 75;
 	imageMode(CENTER);
@@ -108,4 +120,35 @@ function keyPressed() {
   	let ai = new AI(counter % 2);
   	ai.play();
   }
+}
+
+function getPointIndex(x, y) {
+  const n = floor(x / unitW) + 1
+  return y < height / 2 ? n : 25 - n
+}
+
+function getPoint(index) {
+  return position.grid.find(point => point.index === index)
+}
+
+function mousePressed({ x, y }) {
+  const index = getPointIndex(x, y)
+  const point = getPoint(index)
+
+  if (activePlayer.checker) {
+    activePlayer.play(point)
+
+    if (activePlayer.moves === 0) {
+      activePlayer = activePlayer === player1 ? player2 : player1
+      activePlayer.newTurn()
+    }
+  } else {
+    activePlayer.pickup(point.checkers[0])
+  }
+
+  showPosition()
+  showDice()
+
+
+  console.log(index)
 }
