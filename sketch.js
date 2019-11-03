@@ -1,61 +1,60 @@
-const WHITE = 1;
-const BLACK = 0;
+const WHITE = 1
+const BLACK = 0
 
-const DICE_SIZE = 75;
+const DICE_SIZE = 75
 
-let unitW;
-let unitH;
+let unitW
+let unitH
 
-let position;
+let position
 
-const dice = Array(2).fill();
+const dice = Array(2).fill()
 const checkers = []
 
 let player1
 let player2
 let activePlayer
 
-let diceImages;
-function preload () {
-	diceImages = Array(6).fill().map((_, i) => loadImage(`assets/images/dice/${i + 1}.png`))	
+let diceImages
+function preload() {
+  diceImages = Array(6).fill().map((_, i) => loadImage(`assets/images/dice/${i + 1}.png`))
 }
 
 function createCheckers(i, n) {
-	for (let _n = 0; _n < n; _n++) {
-		let point = getPoint(i)
-		let checker = new Checker(BLACK, point)
-		checkers.push(checker)
-		position.grid[i].checkers.push(checker)
+  for (let _n = 0; _n < n; _n++) {
+    let point = getPoint(i)
+    let checker = new Checker(BLACK, point)
+    checkers.push(checker)
+    position.grid[i].checkers.push(checker)
 
-		point = getPoint(25 - i)
-		checker = new Checker(WHITE, point)
-		checkers.push(checker)
-		position.grid[25 - i].checkers.push(checker)
-	}
+    point = getPoint(25 - i)
+    checker = new Checker(WHITE, point)
+    checkers.push(checker)
+    position.grid[25 - i].checkers.push(checker)
+  }
 }
 
 function createStartingPosition() {
-	createCheckers(1, 2);
-	createCheckers(12, 5);
-	createCheckers(17, 3);
-	createCheckers(19, 5);
-	position.update();
+  createCheckers(1, 2)
+  createCheckers(12, 5)
+  createCheckers(17, 3)
+  createCheckers(19, 5)
+  position.update()
 }
 
 function setup() {
-	const grid = Array(26).fill().map((_, i) => new Point(i, []))
-	position = new Position(grid);
+  const grid = Array(26).fill().map((_, i) => new Point(i, []))
+  position = new Position(grid)
 
+  createCanvas(750, 950)
+  background(0)
+  const hitAreaGap = height / 7
+  unitW = width / 12
+  unitH = (height / 2) - (hitAreaGap / 2)
+  createStartingPosition()
+  showPosition()
+  position.update()
 
-	createCanvas(750, 950);
-  background(0);
-  const hitAreaGap = height / 7;
-	unitW = width / 12;
-	unitH = (height / 2) - (hitAreaGap / 2);
-	createStartingPosition();
-	showPosition();
-  position.update();
-  
   choosePlayers()
   newTurn()
 }
@@ -66,47 +65,47 @@ function choosePlayers() {
 }
 
 function showPosition() {
-	drawBoard();
-	showCheckers();
+  drawBoard()
+  showCheckers()
 }
 
 function drawBoard() {
-	background(0);
-	noStroke(255)
+  background(0)
+  noStroke(255)
 
-	for (let i = 0; i < 12; i++) {
-		fill(i % 2 === 0 ? 200 : 100);
-		const x1 = unitW * i;
-		const x2 = unitW * (i + 0.5);
-		const x3 = unitW * (i + 1.0);
+  for (let i = 0; i < 12; i++) {
+    fill(i % 2 === 0 ? 200 : 100)
+    const x1 = unitW * i
+    const x2 = unitW * (i + 0.5)
+    const x3 = unitW * (i + 1.0)
 
-		let y1 = 0;
-		let y2 = unitH;
-		let y3 = 0;
-		triangle(x1, y1, x2, y2, x3, y3);
+    let y1 = 0
+    let y2 = unitH
+    let y3 = 0
+    triangle(x1, y1, x2, y2, x3, y3)
 
-		y1 = height - y1;
-		y2 = height - y2;
-		y3 = height - y3;
-		triangle(x1, y1, x2, y2, x3, y3);
-	}	
+    y1 = height - y1
+    y2 = height - y2
+    y3 = height - y3
+    triangle(x1, y1, x2, y2, x3, y3)
+  }
 }
 
 function showCheckers() {
-	position.grid.forEach((point) => {
-		point.checkers.forEach((checker, i) => {
-			checker.show(i);
-		})
-	})
+  position.grid.forEach((point) => {
+    point.checkers.forEach((checker, i) => {
+      checker.show(i)
+    })
+  })
 }
 
 function rollDice() {
-	dice[0] = int(random(1, 7));
-  dice[1] = int(random(1, 7));
-  
-  position.updateValidMoves(activePlayer);
+  dice[0] = int(random(1, 7))
+  dice[1] = int(random(1, 7))
 
-	return dice;
+  position.updateValidMoves(activePlayer)
+
+  return dice
 }
 
 function resetDice() {
@@ -115,39 +114,39 @@ function resetDice() {
 }
 
 function showDie(die, xPos) {
-	die && image(diceImages[die - 1], xPos, height / 2, DICE_SIZE, DICE_SIZE)
+  die && image(diceImages[die - 1], xPos, height / 2, DICE_SIZE, DICE_SIZE)
 }
 
 function showDice() {
-  imageMode(CENTER);
+  imageMode(CENTER)
 
   showDie(dice[0], width / 2 - DICE_SIZE)
   showDie(dice[1], width / 2 + DICE_SIZE)
 }
 
-let counter = 0;
+let counter = 0
 function keyPressed() {
   switch (keyCode) {
     case 32:
-      rollDice();
-      showDice();
-      break;
+      rollDice()
+      showDice()
+      break
 
     case 65:
-      counter++;
-      let ai = new AI(counter % 2);
-      ai.play();           
-      break;
+      counter++
+      const ai = new AI(counter % 2)
+      ai.play()
+      break
 
     case 27:
       activePlayer.releaseChecker()
       showPosition()
       showDice()
 
-      break;
-  
+      break
+
     default:
-      break;
+      break
   }
 }
 
@@ -157,7 +156,7 @@ function isInHitArea(x, y) {
 
 function getPointIndex(x, y) {
   if (isInHitArea(x, y)) {
-    return x < width / 2 ? 0 : 25;
+    return x < width / 2 ? 0 : 25
   }
 
   const n = floor(x / unitW) + 1

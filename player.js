@@ -2,10 +2,10 @@ class Player {
   constructor(color) {
     this.moves = 0
 
-    this.myColor  = color;
-		this.oppColor = color === WHITE ? BLACK : WHITE;
-		this.myCheckers  = checkers.filter(checker => checker.color === this.myColor)
-		this.oppCheckers = checkers.filter(checker => checker.color === this.oppColor)
+    this.myColor = color
+    this.oppColor = color === WHITE ? BLACK : WHITE
+    this.myCheckers = checkers.filter(checker => checker.color === this.myColor)
+    this.oppCheckers = checkers.filter(checker => checker.color === this.oppColor)
   }
 
   resetMoves() {
