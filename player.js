@@ -50,6 +50,21 @@ class Player {
     this.moves--
   }
 
+  noValidMoves() {
+    return !dice.some(roll => position.validMoves.get(roll).length)
+  }
+
+  skipTurn() {
+    if (!this.noValidMoves()) {
+      console.log('cannot skip turn when valid moves are available')
+      return
+    }
+
+    console.log('skipping turn')
+
+    this.moves = 0
+  }
+
   _pickupIsValid(checker) {
     return dice.some(roll => position.isValidMove(checker, roll))
   }
