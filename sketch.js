@@ -1,6 +1,8 @@
 const WHITE = 1;
 const BLACK = 0;
 
+const DICE_SIZE = 75;
+
 let unitW;
 let unitH;
 
@@ -46,21 +48,21 @@ function setup() {
 
 
 	createCanvas(750, 950);
-	background(0);
+  background(0);
+  const hitAreaGap = height / 7;
 	unitW = width / 12;
-	unitH = (height / 2) - (height / 15);
+	unitH = (height / 2) - (hitAreaGap / 2);
 	createStartingPosition();
 	showPosition();
   position.update();
   
   choosePlayers()
+  newTurn()
 }
 
 function choosePlayers() {
   player1 = new Player(WHITE)
   player2 = new Player(BLACK)
-  activePlayer = player1
-  activePlayer.newTurn()
 }
 
 function showPosition() {
@@ -100,29 +102,64 @@ function showCheckers() {
 
 function rollDice() {
 	dice[0] = int(random(1, 7));
-	dice[1] = int(random(1, 7));
+  dice[1] = int(random(1, 7));
+  
+  position.updateValidMoves(activePlayer);
+
 	return dice;
 }
 
-function showDice() {
-	const diceSize = 75;
-	imageMode(CENTER);
-	image(diceImages[dice[0] - 1], width / 2 - diceSize, height / 2, diceSize, diceSize)
-	image(diceImages[dice[1] - 1], width / 2 + diceSize, height / 2, diceSize, diceSize)	
+function resetDice() {
+  dice[0] = undefined
+  dice[1] = undefined
 }
+
+function showDie(die, xPos) {
+	die && image(diceImages[die - 1], xPos, height / 2, DICE_SIZE, DICE_SIZE)
+}
+
+function showDice() {
+  imageMode(CENTER);
+
+  showDie(dice[0], width / 2 - DICE_SIZE)
+  showDie(dice[1], width / 2 + DICE_SIZE)
+}
+
 let counter = 0;
 function keyPressed() {
-  if (keyCode === 32) {
-    rollDice();
-    showDice();
-  } else if (keyCode === 65) {
-		counter++;
-  	let ai = new AI(counter % 2);
-  	ai.play();
+  switch (keyCode) {
+    case 32:
+      rollDice();
+      showDice();
+      break;
+
+    case 65:
+      counter++;
+      let ai = new AI(counter % 2);
+      ai.play();           
+      break;
+
+    case 27:
+      activePlayer.releaseChecker()
+      showPosition()
+      showDice()
+
+      break;
+  
+    default:
+      break;
   }
 }
 
+function isInHitArea(x, y) {
+  return y > unitH && y < height - unitH
+}
+
 function getPointIndex(x, y) {
+  if (isInHitArea(x, y)) {
+    return x < width / 2 ? 0 : 25;
+  }
+
   const n = floor(x / unitW) + 1
   return y < height / 2 ? n : 25 - n
 }
@@ -139,16 +176,18 @@ function mousePressed({ x, y }) {
     activePlayer.play(point)
 
     if (activePlayer.moves === 0) {
-      activePlayer = activePlayer === player1 ? player2 : player1
-      activePlayer.newTurn()
+      newTurn()
     }
   } else {
-    activePlayer.pickup(point.checkers[0])
+    activePlayer.pickup(point.checkers[point.checkers.length - 1])
   }
 
   showPosition()
   showDice()
+}
 
-
-  console.log(index)
+function newTurn() {
+  activePlayer = activePlayer === player1 ? player2 : player1
+  activePlayer.resetMoves()
+  resetDice()
 }

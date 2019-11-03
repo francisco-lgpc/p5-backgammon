@@ -2,7 +2,7 @@ class Point {
 	constructor(index, checkers) {
 		this.index = index;
 		this.checkers = checkers;
-		this.closed = checkers.count
+		this.closed = false
 		this.updateClosed();
 	}
 	updateClosed() {

@@ -1,7 +1,8 @@
 class Checker {
 	constructor(color, point) {
 		this.color = color;
-		this.point = point;
+    this.point = point;
+    this.isPickedUp = false;
   }
 
 	show(heightIdx) {
@@ -22,7 +23,11 @@ class Checker {
 			y = height - y;
 		}
 
-		ellipse(x, y, unitW);
+    if (this.isPickedUp) {
+      stroke(255, 100, 51);
+    }
+
+    ellipse(x, y, unitW);
 	}
 
 	startPoint() {

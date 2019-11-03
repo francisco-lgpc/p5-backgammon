@@ -8,7 +8,7 @@ class Player {
 		this.oppCheckers = checkers.filter(checker => checker.color === this.oppColor)
   }
 
-  newTurn() {
+  resetMoves() {
     this.moves = 2
   }
 
@@ -19,6 +19,14 @@ class Player {
     }
 
     this.checker = checker
+    this.checker.isPickedUp = true
+  }
+
+  releaseChecker() {
+    if (!this.checker) return
+
+    this.checker.isPickedUp = false
+    this.checker = undefined
   }
 
   play(point) {
@@ -32,7 +40,7 @@ class Player {
       return
     }
 
-    if (!this._playIsValid(point)) {
+    if (!position.canPlay(this.checker, point)) {
       console.log('play is not valid')
       return
     }
@@ -43,12 +51,6 @@ class Player {
   }
 
   _pickupIsValid(checker) {
-    return dice.some(die => (
-      position.getPlayableCheckers(this.myColor, die).some(_checker => _checker === checker)
-    ))
-  }
-
-  _playIsValid(point) {
-    return dice.some(die => die === this.checker.point.index - point.index)
+    return dice.some(roll => position.isValidMove(checker, roll))
   }
 }
