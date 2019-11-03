@@ -7,7 +7,16 @@ class Position {
   }
 
   canPlay(checker, newPoint) {
-    return this.isValidMove(checker, this._getRoll(checker, newPoint))
+    const roll = this._getRoll(checker, newPoint)
+    if (this.getBearOffPoints().includes(newPoint) && !dice.includes(roll)) {
+      for (let _hypotheticalRoll = roll + 1; _hypotheticalRoll <= 6; _hypotheticalRoll++) {
+        if (dice.includes(_hypotheticalRoll) && this.isValidMove(checker, _hypotheticalRoll)) {
+          return true
+        }
+      }
+    }
+
+    return this.isValidMove(checker, roll)
   }
 
   play(checker, newPoint) {
@@ -45,6 +54,7 @@ class Position {
 
   findTargetPoint(roll, checker) {
     const increment = roll * (checker.color === BLACK ? 1 : -1)
+
     return position.findPoint(checker.point.index + increment)
   }
 
@@ -65,6 +75,29 @@ class Position {
     this.validMoves = new Map(dice.map(roll => [
       roll, this._getPlayableCheckers(availableCheckers, player.myColor, roll)
     ]))
+
+    // when bearing off and no moves available, try to find other available bearing off moves
+    if (
+      this.isBearingOff(player.myColor) &&
+      Array.from(this.validMoves.values()).every(moves => !moves.length)
+    ) {
+      const bearOffDice = dice
+        .sort((a, b) => b - a)
+        .filter(roll => (
+          availableCheckers.every(checker => this._isInBearOffPosition(checker, roll))
+        ))
+
+      if (!bearOffDice.length) return
+
+      const playableCheckers = this._getPlayableCheckers(availableCheckers, player.myColor, bearOffDice[0], true)
+
+      if (playableCheckers.length) {
+        this.validMoves.set(bearOffDice[0], playableCheckers)
+      } else {
+        const playableCheckers = this._getPlayableCheckers(availableCheckers, player.myColor, bearOffDice[1], true)
+        this.validMoves.set(bearOffDice[1], playableCheckers)
+      }
+    }
   }
 
   isValidMove(checker, roll) {
@@ -80,9 +113,25 @@ class Position {
     ))
   }
 
-  _getPlayableCheckers(availableCheckers, color, roll) {
-    return availableCheckers.filter(checker => {
+  getBearOffPoint(color) {
+    return color === BLACK ? this.findPoint(25) : this.findPoint(0)
+  }
+
+  getBearOffPoints() {
+    return [this.getBearOffPoint(BLACK), this.getBearOffPoint(WHITE)]
+  }
+
+  _isInBearOffPosition(checker, roll) {
+    return checker.color === BLACK ? checker.point.index > roll : checker.point.index < roll
+  }
+
+  _getPlayableCheckers(availableCheckers, color, roll, mustBearOff = false) {
+    let playableCheckers = availableCheckers.filter(checker => {
       const newPoint = this.findTargetPoint(roll, checker)
+
+      if (mustBearOff) {
+        return newPoint && (newPoint.index === 25 || newPoint.index === 0)
+      }
 
       return (
         newPoint &&
@@ -90,6 +139,12 @@ class Position {
         (this.isBearingOff(color) || (newPoint.index !== 25 && newPoint.index !== 0))
       )
     })
+
+    if (mustBearOff && !playableCheckers.length && this.isBearingOff(color) && roll > 1) {
+      playableCheckers = this._getPlayableCheckers(availableCheckers, color, roll - 1, true)
+    }
+
+    return playableCheckers
   }
 
   _getRoll(checker, point) {
