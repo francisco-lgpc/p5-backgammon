@@ -127,16 +127,34 @@ function showDice() {
 let counter = 0
 function keyPressed() {
   switch (keyCode) {
+    case 13:
+      activePlayer.skipTurn()
+      if (activePlayer.moves === 0) {
+        newTurn()
+      }
+      showDice()
+
+      break
+
     case 32:
       rollDice()
       showDice()
       break
 
-    case 65:
+    case 65: {
       counter++
-      const ai = new AI(counter % 2)
+      const ai = new AI(activePlayer)
       ai.play()
+      showPosition()
+
+      if (activePlayer.moves === 0) {
+        newTurn()
+      }
+
+      showDice()
+
       break
+    }
 
     case 27:
       activePlayer.releaseChecker()

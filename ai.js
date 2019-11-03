@@ -1,37 +1,23 @@
 class AI {
-  constructor(color) {
-    this.myColor = color
-    this.oppColor = color === WHITE ? BLACK : WHITE
-    this.myCheckers = checkers.filter(checker => checker.color === this.myColor)
-    this.oppCheckers = checkers.filter(checker => checker.color === this.oppColor)
+  constructor(player) {
+    this.player = player
   }
 
   play() {
-    dice.forEach(die => {
-      const myPlayableCheckers = position.getPlayableCheckers(this.myColor, die)
+    const roll = random(dice.filter(roll => position.validMoves.get(roll).length))
 
-      while (true) {
-        const checker = myPlayableCheckers.splice(int(random(myPlayableCheckers.length)), 1)[0]
-        let newPoint
+    if (!roll) {
+      this.player.skipTurn()
 
-        if (this.myColor === BLACK) {
-          newPoint = position.findPoint(checker.point.index + die)
-        } else {
-          newPoint = position.findPoint(checker.point.index - die)
-        }
+      return
+    }
 
-        if (newPoint && newPoint.index !== 25 && newPoint.index !== 0 && newPoint.closed !== this.oppColor) {
-          position.play(checker, newPoint)
-          break
-        }
+    const checker = random(position.validMoves.get(roll))
 
-        if (myPlayableCheckers.length === 0) {
-          console.log('no legal moves')
-          break
-        }
-      }
-    })
-    position.update()
-    showPosition()
+    this.player.pickup(checker)
+
+    const newPoint = position.findTargetPoint(roll, checker)
+
+    this.player.play(newPoint)
   }
 }
