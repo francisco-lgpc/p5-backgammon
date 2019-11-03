@@ -43,6 +43,11 @@ class Position {
     return this.grid.find(point => point.index === i)
   }
 
+  findTargetPoint(roll, checker) {
+    const increment = roll * (checker.color === BLACK ? 1 : -1)
+    return position.findPoint(checker.point.index + increment)
+  }
+
   updateGrid() {
     this.grid.forEach(point => point.updateCheckers())
   }
@@ -57,7 +62,9 @@ class Position {
     const hitCheckers = player.myCheckers.filter(checker => checker.point === checker.startPoint())
     const availableCheckers = hitCheckers.length ? hitCheckers : player.myCheckers
 
-    this.validMoves = new Map(dice.map(roll => [roll, this._getPlayableCheckers(player.myColor, roll)]))
+    this.validMoves = new Map(dice.map(roll => [
+      roll, this._getPlayableCheckers(availableCheckers, player.myColor, roll)
+    ]))
   }
 
   isValidMove(checker, roll) {
@@ -73,17 +80,9 @@ class Position {
     ))
   }
 
-  _getPlayableCheckers(color, roll) {
-    const myCheckers = checkers.filter(checker => checker.color === color)
-    const hitCheckers = myCheckers.filter(checker => checker.point === checker.startPoint())
-
-    if (hitCheckers.length > 0) {
-      return hitCheckers
-    }
-
-    return myCheckers.filter(checker => {
-      const increment = roll * (color === BLACK ? 1 : -1)
-      const newPoint = position.findPoint(checker.point.index + increment)
+  _getPlayableCheckers(availableCheckers, color, roll) {
+    return availableCheckers.filter(checker => {
+      const newPoint = this.findTargetPoint(roll, checker)
 
       return (
         newPoint &&
