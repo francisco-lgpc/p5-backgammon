@@ -57,7 +57,23 @@ function setup() {
 
   choosePlayers()
   newTurn()
+
+  // rollDice()
+  // frameRate(1)
 }
+
+// function draw() {
+//   const ai = new AI(activePlayer)
+//   ai.play()
+//   showPosition()
+
+//   if (activePlayer.moves === 0) {
+//     newTurn()
+//     rollDice()
+//   }
+
+//   showDice()
+// }
 
 function choosePlayers() {
   player1 = new Player(WHITE)
@@ -74,16 +90,17 @@ function drawBoard() {
   noStroke(255)
 
   for (let i = 0; i < 12; i++) {
-    fill(i % 2 === 0 ? 200 : 100)
     const x1 = unitW * i
     const x2 = unitW * (i + 0.5)
     const x3 = unitW * (i + 1.0)
 
+    fill(i % 2 === 0 ? 200 : 100)
     let y1 = 0
     let y2 = unitH
     let y3 = 0
     triangle(x1, y1, x2, y2, x3, y3)
 
+    fill(i % 2 === 0 ? 100 : 200)
     y1 = height - y1
     y2 = height - y2
     y3 = height - y3
@@ -124,7 +141,6 @@ function showDice() {
   showDie(dice[1], width / 2 + DICE_SIZE)
 }
 
-let counter = 0
 function keyPressed() {
   switch (keyCode) {
     case 13:
@@ -142,7 +158,6 @@ function keyPressed() {
       break
 
     case 65: {
-      counter++
       const ai = new AI(activePlayer)
       ai.play()
       showPosition()
@@ -161,6 +176,10 @@ function keyPressed() {
       showPosition()
       showDice()
 
+      break
+
+    case 80:
+      noLoop()
       break
 
     default:
