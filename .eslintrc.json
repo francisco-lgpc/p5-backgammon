@@ -7,6 +7,7 @@
   },
   "rules": {
     "space-before-function-paren": ["error", "never"],
+    "max-len": ["error", { "code": 100 }],
     "no-unused-vars": [
       "error",
       {
@@ -18,15 +19,11 @@
   "globals": {
     "WHITE": true,
     "BLACK": true,
+    "DICE_SIZE": true,
     "unitW": true,
     "unitH": true,
-    "position": true,
-    "dice": true,
-    "checkers": true,
-    "player1": true,
-    "player2": true,
-    "activePlayer": true,
     "diceImages": true,
+    "Game": true,
     "Checker": true,
     "Position": true,
     "Point": true,

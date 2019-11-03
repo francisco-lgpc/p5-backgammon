@@ -1,5 +1,6 @@
 class Position {
-  constructor(grid) {
+  constructor(game, grid) {
+    this.game = game
     this.grid = grid
     this.updateClosedPoints()
 
@@ -8,9 +9,12 @@ class Position {
 
   canPlay(checker, newPoint) {
     const roll = this._getRoll(checker, newPoint)
-    if (this.getBearOffPoints().includes(newPoint) && !dice.includes(roll)) {
+    if (this.getBearOffPoints().includes(newPoint) && !this.game.dice.includes(roll)) {
       for (let _hypotheticalRoll = roll + 1; _hypotheticalRoll <= 6; _hypotheticalRoll++) {
-        if (dice.includes(_hypotheticalRoll) && this.isValidMove(checker, _hypotheticalRoll)) {
+        if (
+          this.game.dice.includes(_hypotheticalRoll) &&
+          this.isValidMove(checker, _hypotheticalRoll)
+        ) {
           return true
         }
       }
@@ -21,8 +25,8 @@ class Position {
 
   play(checker, newPoint) {
     // remove die and update valid moves
-    const idx = dice.findIndex(roll => roll === this._getRoll(checker, newPoint))
-    dice.splice(idx, 1)
+    const idx = this.game.dice.findIndex(roll => roll === this._getRoll(checker, newPoint))
+    this.game.dice.splice(idx, 1)
 
     if (newPoint.checkers.length > 1) {
       const otherChecker = newPoint.checkers[0]
@@ -39,13 +43,13 @@ class Position {
     }
     checker.point = newPoint
     checker.isPickedUp = false
-    position.update()
+    this.game.position.update()
   }
 
   update() {
     this.updateGrid()
     this.updateClosedPoints()
-    this.updateValidMoves(activePlayer)
+    this.updateValidMoves(this.game.activePlayer)
   }
 
   findPoint(i) {
@@ -55,7 +59,7 @@ class Position {
   findTargetPoint(roll, checker) {
     const increment = roll * (checker.color === BLACK ? 1 : -1)
 
-    return position.findPoint(checker.point.index + increment)
+    return this.game.position.findPoint(checker.point.index + increment)
   }
 
   updateGrid() {
@@ -72,7 +76,7 @@ class Position {
     const hitCheckers = player.myCheckers.filter(checker => checker.point === checker.startPoint())
     const availableCheckers = hitCheckers.length ? hitCheckers : player.myCheckers
 
-    this.validMoves = new Map(dice.map(roll => [
+    this.validMoves = new Map(this.game.dice.map(roll => [
       roll, this._getPlayableCheckers(availableCheckers, player.myColor, roll)
     ]))
 
@@ -81,7 +85,7 @@ class Position {
       this.isBearingOff(player.myColor) &&
       Array.from(this.validMoves.values()).every(moves => !moves.length)
     ) {
-      const bearOffDice = dice
+      const bearOffDice = this.game.dice
         .sort((a, b) => b - a)
         .filter(roll => (
           availableCheckers.every(checker => this._isInBearOffPosition(checker, roll))
@@ -89,12 +93,16 @@ class Position {
 
       if (!bearOffDice.length) return
 
-      const playableCheckers = this._getPlayableCheckers(availableCheckers, player.myColor, bearOffDice[0], true)
+      const playableCheckers = this._getPlayableCheckers(
+        availableCheckers, player.myColor, bearOffDice[0], true
+      )
 
       if (playableCheckers.length) {
         this.validMoves.set(bearOffDice[0], playableCheckers)
       } else {
-        const playableCheckers = this._getPlayableCheckers(availableCheckers, player.myColor, bearOffDice[1], true)
+        const playableCheckers = this._getPlayableCheckers(
+          availableCheckers, player.myColor, bearOffDice[1], true
+        )
         this.validMoves.set(bearOffDice[1], playableCheckers)
       }
     }
@@ -108,7 +116,7 @@ class Position {
   }
 
   isBearingOff(color) {
-    return !checkers.filter(checker => checker.color === color).some(checker => (
+    return !this.game.checkers.filter(checker => checker.color === color).some(checker => (
       color === BLACK ? checker.point.index < 19 : checker.point.index > 6
     ))
   }

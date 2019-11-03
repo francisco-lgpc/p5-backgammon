@@ -1,11 +1,13 @@
 class Player {
-  constructor(color) {
+  constructor(game, color) {
+    this.game = game
     this.moves = 0
 
     this.myColor = color
     this.oppColor = color === WHITE ? BLACK : WHITE
-    this.myCheckers = checkers.filter(checker => checker.color === this.myColor)
-    this.oppCheckers = checkers.filter(checker => checker.color === this.oppColor)
+
+    this.myCheckers = this.game.checkers.filter(checker => checker.color === this.myColor)
+    this.oppCheckers = this.game.checkers.filter(checker => checker.color === this.oppColor)
   }
 
   resetMoves() {
@@ -40,18 +42,18 @@ class Player {
       return
     }
 
-    if (!position.canPlay(this.checker, point)) {
+    if (!this.game.position.canPlay(this.checker, point)) {
       console.log('play is not valid')
       return
     }
 
-    position.play(this.checker, point)
+    this.game.position.play(this.checker, point)
     this.checker = undefined
     this.moves--
   }
 
   noValidMoves() {
-    return !dice.some(roll => position.validMoves.get(roll).length)
+    return !this.game.dice.some(roll => this.game.position.validMoves.get(roll).length)
   }
 
   skipTurn() {
@@ -66,6 +68,6 @@ class Player {
   }
 
   _pickupIsValid(checker) {
-    return dice.some(roll => position.isValidMove(checker, roll))
+    return this.game.dice.some(roll => this.game.position.isValidMove(checker, roll))
   }
 }

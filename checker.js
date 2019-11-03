@@ -1,5 +1,6 @@
 class Checker {
-  constructor(color, point) {
+  constructor(game, color, point) {
+    this.game = game
     this.color = color
     this.point = point
     this.isPickedUp = false
@@ -31,7 +32,7 @@ class Checker {
   }
 
   startPoint() {
-    return this.color === BLACK ? position.findPoint(0) : position.findPoint(25)
+    return this.color === BLACK ? this.game.position.findPoint(0) : this.game.position.findPoint(25)
   }
 
   gotHit() {
