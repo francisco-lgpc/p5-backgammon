@@ -26,10 +26,7 @@ class AI {
 
     this.player.pickup(checker)
 
-    let newPoint = this.game.position.findTargetPoint(roll, checker)
-    if (!newPoint) {
-      newPoint = this.game.position.getBearOffPoint(checker.color)
-    }
+    const newPoint = this.game.position.findTargetPoint(roll, checker)
 
     this.player.play(newPoint)
   }
