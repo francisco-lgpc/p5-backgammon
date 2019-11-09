@@ -1,5 +1,13 @@
 class Game {
   constructor() {
+    // opp state --> my score
+    this.scores = new Map([
+      [STATES.BEARED_OFF, 0],
+      [STATES.BEARING_OFF, 1],
+      [STATES.OUT_OPP_BOARD, 2],
+      [STATES.IN_OPP_BOARD, 3]
+    ])
+
     this.dice = Array(2).fill()
     this.checkers = []
 
@@ -21,7 +29,10 @@ class Game {
   getResult() {
     if (!this.isOver()) return
 
-    return { player1: this.player1.getState(), player2: this.player2.getState() }
+    return {
+      player1: this.scores.get(this.player2.getState()),
+      player2: this.scores.get(this.player1.getState())
+    }
   }
 
   rollDice() {

@@ -49,7 +49,13 @@ class Position {
   findTargetPoint(roll, checker) {
     const increment = roll * (checker.color === BLACK ? 1 : -1)
 
-    return this.game.position.findPoint(checker.point.index + increment)
+    let newPoint = this.game.position.findPoint(checker.point.index + increment)
+
+    if (!newPoint && this.isValidMove(checker, roll)) {
+      newPoint = this.game.position.getBearOffPoint(checker.color)
+    }
+
+    return newPoint
   }
 
   updateGrid() {

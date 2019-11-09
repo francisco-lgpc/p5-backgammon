@@ -64,6 +64,10 @@ class Player {
   }
 
   play(point) {
+    if (this.noValidMoves()) {
+      debugger
+    }
+
     if (!this.hasRolledDice) {
       console.log('please roll the dice')
     }
