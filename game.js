@@ -17,13 +17,11 @@ class Game {
   rollDice() {
     this.dice[0] = int(random(1, 7))
     this.dice[1] = int(random(1, 7))
-
-    this.position.updateValidMoves(this.activePlayer)
   }
 
   newTurn() {
+    this.activePlayer.endTurn()
     this.activePlayer = this.activePlayer === this.player1 ? this.player2 : this.player1
-    this.activePlayer.resetMoves()
     this._resetDice()
   }
 

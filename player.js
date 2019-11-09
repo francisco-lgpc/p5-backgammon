@@ -1,17 +1,49 @@
 class Player {
   constructor(game, color) {
     this.game = game
-    this.moves = 0
+    this.dice = []
 
     this.myColor = color
     this.oppColor = color === WHITE ? BLACK : WHITE
 
     this.myCheckers = this.game.checkers.filter(checker => checker.color === this.myColor)
     this.oppCheckers = this.game.checkers.filter(checker => checker.color === this.oppColor)
+
+    this.hasRolledDice = false
   }
 
-  resetMoves() {
-    this.moves = 2
+  endTurn() {
+    this.dice = []
+    this.hasRolledDice = false
+  }
+
+  isTurnOver() {
+    return this.hasRolledDice && this.dice.every(die => die.played)
+  }
+
+  rollDice() {
+    if (this.hasRolledDice) {
+      console.log('Dice Can only be rolled at the start of each turn')
+      return
+    }
+
+    this.game.rollDice()
+
+    this.hasRolledDice = true
+
+    if (this.game.dice[0] === this.game.dice[1]) {
+      this.dice = [...this._getInitialDice(), ...this._getInitialDice()]
+    } else {
+      this.dice = this._getInitialDice()
+    }
+
+    this.game.position.updateValidMoves(this)
+  }
+
+  getAvailableDice() {
+    return this.dice
+      .filter(move => !move.played)
+      .map(move => move.roll)
   }
 
   pickup(checker) {
@@ -32,8 +64,12 @@ class Player {
   }
 
   play(point) {
-    if (this.moves === 0) {
-      console.log('no moves')
+    if (!this.hasRolledDice) {
+      console.log('please roll the dice')
+    }
+
+    if (this.dice.every(move => move.played)) {
+      console.log('no dice')
       return
     }
 
@@ -49,25 +85,28 @@ class Player {
 
     this.game.position.play(this.checker, point)
     this.checker = undefined
-    this.moves--
   }
 
   noValidMoves() {
-    return !this.game.dice.some(roll => this.game.position.validMoves.get(roll).length)
+    return !this.getAvailableDice().some(roll => this.game.position.validMoves.get(roll).length)
   }
 
   skipTurn() {
     if (!this.noValidMoves()) {
-      console.log('cannot skip turn when valid moves are available')
+      console.log('cannot skip turn when valid dice are available')
       return
     }
 
     console.log('skipping turn')
 
-    this.moves = 0
+    this.dice.forEach(die => { die.played = true })
   }
 
   _pickupIsValid(checker) {
-    return this.game.dice.some(roll => this.game.position.isValidMove(checker, roll))
+    return this.getAvailableDice().some(roll => this.game.position.isValidMove(checker, roll))
+  }
+
+  _getInitialDice() {
+    return this.game.dice.map(roll => ({ played: false, roll }))
   }
 }

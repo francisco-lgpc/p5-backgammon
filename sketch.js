@@ -21,7 +21,10 @@ function setup() {
   unitH = (height / 2) - (hitAreaGap / 2)
 
   game = new Game()
-  frameRate(1)
+  frameRate(15)
+
+  drawBoard()
+  game.show()
 }
 
 // function draw() {
@@ -57,7 +60,7 @@ function keyPressed() {
   switch (keyCode) {
     case 13:
       game.activePlayer.skipTurn()
-      if (game.activePlayer.moves === 0) {
+      if (game.activePlayer.isTurnOver()) {
         game.newTurn()
       }
       drawBoard()
@@ -66,7 +69,7 @@ function keyPressed() {
       break
 
     case 32:
-      game.rollDice()
+      game.activePlayer.rollDice()
       drawBoard()
       game.show()
       break
@@ -96,16 +99,11 @@ function keyPressed() {
 }
 
 function playWithAI() {
-  if (!game.dice.some(roll => roll)) {
-    game.rollDice()
-    return
-  }
-
   const ai = new AI(game, game.activePlayer)
 
   ai.play()
 
-  if (game.activePlayer.moves === 0) {
+  if (game.activePlayer.isTurnOver()) {
     game.newTurn()
   }
 }
@@ -134,7 +132,7 @@ function mousePressed({ x, y }) {
   if (game.activePlayer.checker) {
     game.activePlayer.play(point)
 
-    if (game.activePlayer.moves === 0) {
+    if (game.activePlayer.isTurnOver()) {
       game.newTurn()
     }
   } else {
