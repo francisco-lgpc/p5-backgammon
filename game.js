@@ -14,6 +14,16 @@ class Game {
     this.newTurn()
   }
 
+  isOver() {
+    return !!this.position.getBearOffPoints().find(point => point.checkers.length === 15)
+  }
+
+  getResult() {
+    if (!this.isOver()) return
+
+    return { player1: this.player1.getState(), player2: this.player2.getState() }
+  }
+
   rollDice() {
     this.dice[0] = int(random(1, 7))
     this.dice[1] = int(random(1, 7))

@@ -102,6 +102,19 @@ class Player {
     this.dice.forEach(die => { die.played = true })
   }
 
+  getState() {
+    const indeces = this.myCheckers.map(checker => (
+      this.myColor === BLACK ? checker.point.index : 25 - checker.point.index
+    ))
+
+    const min = Math.min(...indeces)
+
+    if (min === 25) return STATES.BEARED_OFF
+    if (min >= 19) return STATES.BEARING_OFF
+    if (min > 6) return STATES.OUT_OPP_BOARD
+    return STATES.IN_OPP_BOARD
+  }
+
   _pickupIsValid(checker) {
     return this.getAvailableDice().some(roll => this.game.position.isValidMove(checker, roll))
   }

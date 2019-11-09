@@ -1,6 +1,13 @@
 const WHITE = 1
 const BLACK = 0
 
+const STATES = {
+  BEARED_OFF: 0,
+  BEARING_OFF: 1,
+  OUT_OPP_BOARD: 2,
+  IN_OPP_BOARD: 3
+}
+
 const DICE_SIZE = 75
 
 let unitW
@@ -28,6 +35,12 @@ function setup() {
 }
 
 // function draw() {
+//   if (game.isOver()) {
+//     console.log(game.getResult())
+
+//     return
+//   }
+
 //   this.playWithAI()
 //   drawBoard()
 //   game.show()

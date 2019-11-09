@@ -19,6 +19,7 @@
   "globals": {
     "WHITE": true,
     "BLACK": true,
+    "STATES": true,
     "DICE_SIZE": true,
     "unitW": true,
     "unitH": true,
