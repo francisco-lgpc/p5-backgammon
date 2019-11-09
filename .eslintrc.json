@@ -21,6 +21,7 @@
     "BLACK": true,
     "STATES": true,
     "DICE_SIZE": true,
+    "BEAR_OFF_INDEX": true,
     "unitW": true,
     "unitH": true,
     "diceImages": true,

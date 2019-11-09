@@ -20,7 +20,7 @@ class Position {
 
     if (newPoint.checkers.length > 1) {
       const otherChecker = newPoint.checkers[0]
-      if (otherChecker.color !== checker.color) {
+      if (otherChecker.color !== checker.color && !newPoint.isBearOffPoint) {
         console.error('*****')
       }
     }

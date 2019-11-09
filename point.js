@@ -3,11 +3,15 @@ class Point {
     this.game = game
     this.index = index
     this.checkers = checkers
+    this.isBearOffPoint = Object.values(BEAR_OFF_INDEX).includes(index)
+
     this.closed = false
     this.updateClosed()
   }
 
   updateClosed() {
+    if (this.isBearOffPoint) return
+
     if (this.isClosed(BLACK)) {
       this.closed = BLACK
     } else if (this.isClosed(WHITE)) {

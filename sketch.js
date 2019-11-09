@@ -10,6 +10,11 @@ const STATES = {
 
 const DICE_SIZE = 75
 
+const BEAR_OFF_INDEX = {
+  WHITE: 0,
+  BLACK: 25
+}
+
 let unitW
 let unitH
 
