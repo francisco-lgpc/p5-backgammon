@@ -23,7 +23,7 @@ class Player {
 
   rollDice() {
     if (this.hasRolledDice) {
-      console.log('Dice Can only be rolled at the start of each turn')
+      Logger.log('Dice Can only be rolled at the start of each turn')
       return
     }
 
@@ -48,7 +48,7 @@ class Player {
 
   pickup(checker) {
     if (!this._pickupIsValid(checker)) {
-      console.log('cannot pickup this checker')
+      Logger.log('cannot pickup this checker')
       return
     }
 
@@ -69,21 +69,21 @@ class Player {
     }
 
     if (!this.hasRolledDice) {
-      console.log('please roll the dice')
+      Logger.log('please roll the dice')
     }
 
     if (this.dice.every(move => move.played)) {
-      console.log('no dice')
+      Logger.log('no dice')
       return
     }
 
     if (!this.checker) {
-      console.log('cannot play without picking up a checker')
+      Logger.log('cannot play without picking up a checker')
       return
     }
 
     if (!this.game.position.canPlay(this.checker, point)) {
-      console.log('play is not valid')
+      Logger.log('play is not valid')
       return
     }
 
@@ -97,11 +97,11 @@ class Player {
 
   skipTurn() {
     if (!this.noValidMoves()) {
-      console.log('cannot skip turn when valid dice are available')
+      Logger.log('cannot skip turn when valid dice are available')
       return
     }
 
-    console.log('skipping turn')
+    Logger.log('skipping turn')
 
     this.dice.forEach(die => { die.played = true })
   }

@@ -24,7 +24,7 @@ function setup() {
 
 // function draw() {
 //   if (game.isOver()) {
-//     console.log(game.getResult())
+//     Logger.log(game.getResult())
 
 //     return
 //   }

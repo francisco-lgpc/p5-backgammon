@@ -16,7 +16,7 @@ class Checker {
     if (this.point === this.startPoint()) {
       x = 100 + heightIdx * 5
       y = height / 2
-      console.log('start')
+      Logger.log('start')
     }
 
     if (this.point.index >= 13) {
@@ -37,6 +37,6 @@ class Checker {
 
   gotHit() {
     this.point = this.startPoint()
-    console.log('hit', this.color)
+    Logger.log('hit', this.color)
   }
 }

@@ -14,3 +14,5 @@ const BEAR_OFF_INDEX = {
   WHITE: 0,
   BLACK: 25
 }
+
+DEBUG = false

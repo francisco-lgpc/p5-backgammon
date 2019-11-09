@@ -6,7 +6,7 @@ class AI {
 
   play() {
     if (!this.player.hasRolledDice) {
-      console.log('AI - Roll Dice')
+      Logger.log('AI - Roll Dice')
       this.player.rollDice()
 
       return
@@ -16,7 +16,7 @@ class AI {
     const roll = random(dice.filter(roll => this.game.position.validMoves.get(roll).length))
 
     if (!roll) {
-      console.log('AI - Skip Turn')
+      Logger.log('AI - Skip Turn')
       this.player.skipTurn()
 
       return
