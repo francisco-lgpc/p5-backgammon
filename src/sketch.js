@@ -3,36 +3,47 @@ let unitH
 
 let game
 
+let trainer
+let ai
+
 let diceImages
 function preload() {
   diceImages = Array(6).fill().map((_, i) => loadImage(`assets/images/dice/${i + 1}.png`))
 }
 
 function setup() {
-  createCanvas(750, 950)
+  createCanvas(750, 930)
   background(0)
   const hitAreaGap = height / 7
   unitW = width / 12
   unitH = (height / 2) - (hitAreaGap / 2)
 
   game = new Game()
-  frameRate(15)
+  frameRate(1)
 
   drawBoard()
   game.show()
+
+  trainer = new Trainer()
 }
 
-// function draw() {
-//   if (game.isOver()) {
-//     Logger.log(game.getResult())
+function draw() {
+  if (game.isOver()) {
+    Logger.log(game.getResult())
 
-//     return
-//   }
+    return
+  }
 
-//   this.playWithAI()
-//   drawBoard()
-//   game.show()
-// }
+  if (ai && ai.player === game.activePlayer) {
+    this.playWithAI()
+    drawBoard()
+    game.show()
+  }
+
+  // if (!trainer.isTraining) {
+  //   trainer.train()
+  // }
+}
 
 function drawBoard() {
   background(0)
@@ -76,9 +87,7 @@ function keyPressed() {
       break
 
     case 65: {
-      this.playWithAI()
-      drawBoard()
-      game.show()
+      ai = new NeuralNetworkAI(game, game.player2, trainer.best)
 
       break
     }
@@ -93,6 +102,15 @@ function keyPressed() {
     case 80:
       noLoop()
       break
+    case 84:
+      trainer.train()
+      break
+
+    case 83:
+      tf.loadLayersModel('assets/model/player-nn.json').then(model => {
+        ai = new NeuralNetworkAI(game, game.player2, new NeuralNetwork(model))
+      })
+      break
 
     default:
       break
@@ -100,11 +118,9 @@ function keyPressed() {
 }
 
 function playWithAI() {
-  const ai = new AI(game, game.activePlayer)
-
   ai.play()
 
-  if (game.activePlayer.isTurnOver()) {
+  if (ai.player.isTurnOver()) {
     game.newTurn()
   }
 }
