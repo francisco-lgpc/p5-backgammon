@@ -12,6 +12,7 @@ class Individual extends NeuralNetwork {
 
 class GeneticAlgorithm {
   constructor() {
+    this.generation = 1
     this.currPopulation = []
     this.nextPopulation = this.generateInitialPopulation()
   }
@@ -24,7 +25,7 @@ class GeneticAlgorithm {
 
     this.generateNewPopulation()
 
-    this.currPopulation.forEach(player => player.dispose())
+    this.generation++
   }
 
   generateInitialPopulation() {

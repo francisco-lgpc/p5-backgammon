@@ -4,7 +4,7 @@
 const INPUTS = 76
 
 // arbitrary
-const HIDDEN = 8
+const HIDDEN = 60
 
 // 26 for the point to play from
 // 4 for the die
@@ -23,8 +23,8 @@ class NeuralNetwork {
     this.model.dispose()
   }
 
-  save() {
-    this.model.save('downloads://player-nn')
+  save(name) {
+    this.model.save(`downloads://player-nn-${name}`)
   }
 
   // Synchronous for now
