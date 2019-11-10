@@ -1,5 +1,5 @@
 const MUTATION_RATE = 0.1
-const POPULATION_SIZE = 3
+const POPULATION_SIZE = 64
 
 class Individual extends NeuralNetwork {
   constructor(nn) {
@@ -9,41 +9,6 @@ class Individual extends NeuralNetwork {
     this.fitness = undefined
   }
 }
-
-function rr(arr) {
-  let ps = arr.slice()
-
-  let n = ps.length
-
-  const dummy = -1
-
-  var rs = [] // rs = round array
-  if (!ps) {
-    ps = []
-    for (var k = 1; k <= n; k += 1) {
-      ps.push(k)
-    }
-  } else {
-    ps = ps.slice()
-  }
-
-  if (n % 2 === 1) {
-    ps.push(dummy) // so we can match algorithm for even numbers
-    n += 1
-  }
-
-  for (var j = 0; j < n - 1; j += 1) {
-    rs[j] = [] // create inner match array for round j
-    for (var i = 0; i < n / 2; i += 1) {
-      if (ps[i] !== dummy && ps[n - 1 - i] !== dummy) {
-        rs[j].push([ps[i], ps[n - 1 - i]]) // insert pair as a match
-      }
-    }
-    ps.splice(1, 0, ps.pop()) // permutate for next round
-  }
-
-  return rs
-};
 
 class GeneticAlgorithm {
   constructor() {
@@ -71,58 +36,15 @@ class GeneticAlgorithm {
   }
 
   calculateFitness() {
-    rr(this.currPopulation).forEach(round => {
-      round.forEach(([individual1, individual2]) => {
-        const game = new Game()
-
-        const ai1 = new NeuralNetworkAI(game, game.player1, individual1)
-        const ai2 = new NeuralNetworkAI(game, game.player2, individual2)
-
-        // let color = 0
-        // let count = 0
-
-        while (!game.isOver()) {
-          // count++
-          // if (count % 100 === 0) {
-          //   debugger
-          // }
-          const activeAI = ai1.player === game.activePlayer ? ai1 : ai2
-
-          activeAI.play()
-
-          // if (count > 10) {
-          //   debugger
-          // }
-
-          // if (color === game.activePlayer.myColor) {
-          //   count++
-          // } else {
-          //   color = game.activePlayer.myColor
-          //   count = 0
-          // }
-
-          if (game.activePlayer.isTurnOver()) {
-            game.newTurn()
-          }
-        }
-
-        const result = game.getResult()
-
-        individual1.score += result.player1
-        individual2.score += result.player2
-      })
-    })
+    const tournament = new Tournament(this.currPopulation)
+    tournament.start()
 
     // set fitness as a normalized score
 
-    this.currPopulation.forEach(individual => {
-      individual.fitness = pow(individual.score, 2)
-    })
-
-    const sum = this.currPopulation.reduce((sum, individual) => sum + individual.fitness, 0)
+    const sum = this.currPopulation.reduce((sum, individual) => sum + individual.score, 0)
 
     this.currPopulation.forEach(individual => {
-      individual.fitness = individual.fitness / sum
+      individual.fitness = individual.score / sum
     })
   }
 

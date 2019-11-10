@@ -38,6 +38,7 @@
     "NeuralNetworkAI": true,
     "NeuralNetwork": true,
     "GeneticAlgorithm": true,
+    "Tournament": true,
 
     "tf": true,
 

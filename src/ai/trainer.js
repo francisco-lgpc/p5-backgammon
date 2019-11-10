@@ -3,9 +3,11 @@ class Trainer {
     this.ga = new GeneticAlgorithm()
   }
 
-  train() {
-    this.ga.nextGeneration()
-    console.log(this.ga.currPopulation)
-    console.log(this.ga.nextPopulation)
+  train(n = 1) {
+    for (let i = 0; i < n; i++) {
+      this.ga.nextGeneration()
+      console.log(this.ga.currPopulation)
+      console.log(this.ga.nextPopulation)
+    }
   }
 }
