@@ -1,12 +1,10 @@
-let BREAK
-
 class Trainer {
   constructor() {
     this.ga = new GeneticAlgorithm()
     this.isTraining = false
   }
 
-  train(n = 1) {
+  train(n = 1, save = false) {
     this.isTraining = true
 
     for (let i = 0; i < n; i++) {
@@ -21,6 +19,8 @@ class Trainer {
 
     this.isTraining = false
 
-    this.best.save(`generation_${this.ga.generation}`)
+    if (save) {
+      this.best.save(`generation_${this.ga.generation}`)
+    }
   }
 }

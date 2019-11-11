@@ -41,7 +41,7 @@ function draw() {
   }
 
   // if (!trainer.isTraining) {
-  //   trainer.train()
+  //   trainer.train(10, true)
   // }
 }
 

@@ -28,27 +28,36 @@ class NeuralNetwork {
   }
 
   // Synchronous for now
-  predict(inputArray) {
+  predict(inputs) {
     return tf.tidy(() => {
-      const xs = tf.tensor([inputArray])
-      const ys = this.model.predict(xs)
-      const yValues = ys.dataSync()
-      return yValues
+      const inputTensor = tf.tensor([inputs])
+      const output = this.model.predict(inputTensor)
+
+      return output.dataSync()
     })
   }
 
   static createModel() {
     const model = tf.sequential()
-    const hidden = tf.layers.dense({
+    const hidden1 = tf.layers.dense({
       inputShape: [INPUTS],
       units: HIDDEN,
-      activation: 'sigmoid'
+      activation: 'sigmoid',
+      useBias: true
+    })
+    const hidden2 = tf.layers.dense({
+      inputShape: [HIDDEN],
+      units: HIDDEN,
+      activation: 'sigmoid',
+      useBias: true
     })
     const output = tf.layers.dense({
       units: OUTPUTS,
-      activation: 'softmax'
+      activation: 'sigmoid',
+      useBias: true
     })
-    model.add(hidden)
+    model.add(hidden1)
+    model.add(hidden2)
     model.add(output)
     return model
   }
