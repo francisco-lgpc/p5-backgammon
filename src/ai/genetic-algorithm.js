@@ -8,6 +8,10 @@ class Individual extends NeuralNetwork {
     this.score = 0
     this.fitness = undefined
   }
+
+  copy() {
+    return new Individual(super.copy())
+  }
 }
 
 class GeneticAlgorithm {
@@ -33,7 +37,14 @@ class GeneticAlgorithm {
   }
 
   generateNewPopulation() {
-    this.nextPopulation = this.currPopulation.map(() => this.poolSelection(this.currPopulation))
+    this.nextPopulation = this.currPopulation.map(() => {
+      const child = this.crossover(
+        this.poolSelection(this.currPopulation),
+        this.poolSelection(this.currPopulation)
+      )
+
+      return this.mutate(child)
+    })
   }
 
   calculateFitness() {
@@ -49,8 +60,6 @@ class GeneticAlgorithm {
     })
   }
 
-  // An algorithm for picking one player from an array
-  // based on fitness
   poolSelection(pool) {
     // Start at -1 so that ater the first iteration index will be 0
     let index = -1
@@ -62,23 +71,32 @@ class GeneticAlgorithm {
       index += 1
     }
 
-    const nn = this.mutate(pool[index])
-
-    return new Individual(nn)
+    return pool[index]
   }
 
-  mutate(nn) {
-    const nnCopy = nn.copy()
+  crossover(dominantParent, parent2) {
+    // initialize child as a copy of dominant parent
+    const child = dominantParent.copy()
 
-    nnCopy.mutate(weight => {
-      if (random(1) < MUTATION_RATE) {
-        const offset = randomGaussian() * 0.5
-        return weight + offset
-      } else {
-        return weight
-      }
+    // the probability of each weight remaining the same
+    const dominantParentProb = random(0.7, 1)
+
+    // randomly set some weights to the weight of the other parent
+    const parent2Weights = parent2.getFlatWeights()
+    child.mutate((weight, i) => random() <= dominantParentProb ? weight : parent2Weights[i])
+
+    return child
+  }
+
+  mutate(ind) {
+    const indCopy = ind.copy()
+
+    indCopy.mutate(weight => {
+      if (random() >= MUTATION_RATE) return weight
+
+      return weight + randomGaussian() * 0.5
     })
 
-    return nnCopy
+    return indCopy
   }
 }

@@ -87,4 +87,11 @@ class NeuralNetwork {
       this.model.setWeights(newWeights)
     })
   }
+
+  // Flat array of all weights
+  getFlatWeights() {
+    return tf.tidy(() => {
+      return this.model.getWeights().flatMap(weight => weight.dataSync().slice())
+    })
+  }
 }
