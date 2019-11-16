@@ -45,19 +45,12 @@ class NeuralNetwork {
       activation: 'sigmoid',
       useBias: true
     })
-    const hidden2 = tf.layers.dense({
-      inputShape: [HIDDEN],
-      units: HIDDEN,
-      activation: 'sigmoid',
-      useBias: true
-    })
     const output = tf.layers.dense({
       units: OUTPUTS,
       activation: 'sigmoid',
       useBias: true
     })
     model.add(hidden1)
-    model.add(hidden2)
     model.add(output)
     return model
   }
