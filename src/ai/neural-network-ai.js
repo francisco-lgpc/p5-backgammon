@@ -56,12 +56,12 @@ class NeuralNetworkAI {
 
     const pointToPlayPriority = Array.from(action.slice(0, 26))
       .map((value, index) => ({ value, index }))
-      .sort((a, b) => a.value - b.value)
+      .sort((a, b) => b.value - a.value)
       .map(({ index }) => this.game.position.findPoint(index))
 
     const dieToPlayPriority = Array.from(action.slice(26, 30))
       .map((value, index) => ({ value, index }))
-      .sort((a, b) => a.value - b.value)
+      .sort((a, b) => b.value - a.value)
       .map(({ index }) => dice[index])
 
     let move
