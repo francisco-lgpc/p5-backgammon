@@ -66,30 +66,32 @@ class NeuralNetwork {
   copy() {
     return tf.tidy(() => {
       const modelCopy = NeuralNetwork.createModel()
-      const w = this.model.getWeights()
-      for (let i = 0; i < w.length; i++) {
-        w[i] = w[i].clone()
-      }
-      modelCopy.setWeights(w)
-      const nn = new NeuralNetwork(modelCopy)
-      return nn
+
+      const weights = this.model.getWeights()
+
+      const newWeights = weights.map(weight => weight.clone())
+
+      modelCopy.setWeights(newWeights)
+
+      return new NeuralNetwork(modelCopy)
     })
   }
 
   // Accept an arbitrary function for mutation
-  mutate(func) {
+  mutate(mutationFunc) {
     tf.tidy(() => {
-      const w = this.model.getWeights()
-      for (let i = 0; i < w.length; i++) {
-        const shape = w[i].shape
-        const arr = w[i].dataSync().slice()
-        for (let j = 0; j < arr.length; j++) {
-          arr[j] = func(arr[j])
-        }
-        const newW = tf.tensor(arr, shape)
-        w[i] = newW
-      }
-      this.model.setWeights(w)
+      const weights = this.model.getWeights()
+
+      const newWeights = weights.map(weight => {
+        const shape = weight.shape
+        const values = weight.dataSync().slice()
+
+        const newValues = values.map(mutationFunc)
+
+        return tf.tensor(newValues, shape)
+      })
+
+      this.model.setWeights(newWeights)
     })
   }
 }
